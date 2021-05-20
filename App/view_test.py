@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 """
  * Copyright 2020, Departamento de sistemas y Computación
  * Universidad de Los Andes
@@ -32,6 +33,12 @@ from App import controller
 from DISClib.ADT import stack
 assert config
 
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--filesize', type=int, default=50)
+args = parser.parse_args()
+
 """
 La vista se encarga de la interacción con el usuario.
 Presenta el menu de opciones  y  por cada seleccion
@@ -40,31 +47,23 @@ operación seleccionada.
 """
 
 # ___________________________________________________
-#  Variables
-# ___________________________________________________
-
-
-servicefile = 'singapur_bus_routes/bus_routes_7000.csv'
-initialStation = None
-
-# ___________________________________________________
 #  Menu principal
 # ___________________________________________________
 
 
-def printMenu():
-    print("\n")
-    print("*******************************************")
-    print("Bienvenido")
-    print("1- Inicializar Analizador")
-    print("2- Cargar información de buses de singapur")
-    print("3- Calcular componentes conectados")
-    print("4- Establecer estación base:")
-    print("5- Hay camino entre estacion base y estación: ")
-    print("6- Ruta de costo mínimo desde la estación base y estación: ")
-    print("7- Estación que sirve a mas rutas: ")
-    print("0- Salir")
-    print("*******************************************")
+# def printMenu():
+#     print("\n")
+#     print("*******************************************")
+#     print("Bienvenido")
+#     print("1- Inicializar Analizador")
+#     print("2- Cargar información de buses de singapur")
+#     print("3- Calcular componentes conectados")
+#     print("4- Establecer estación base:")
+#     print("5- Hay camino entre estacion base y estación: ")
+#     print("6- Ruta de costo mínimo desde la estación base y estación: ")
+#     print("7- Estación que sirve a mas rutas: ")
+#     print("0- Salir")
+#     print("*******************************************")
 
 
 def optionTwo(cont):
@@ -112,50 +111,66 @@ def optionSeven(cont):
           + str(maxdeg))
 
 
+# ___________________________________________________
+#  Variables
+# ___________________________________________________
+
+filesizes = [50,150,300,1000,2000,3000,7000,10000,14000]
+for filesize in filesizes:
+    print('*'*12)
+    print('\nFILESIZE: ' + str(filesize))
+    servicefile = 'singapur_bus_routes/bus_routes_{}.csv'.format(str(filesize))
+    initialStation = None
+    # ___________________________________________________
+
+    cont = controller.init()
+    optionTwo(cont)
+    initialStation = '75009-10'
+    optionFour(cont, initialStation)
+    destStation = '15151-10'
+    optionSix(cont, destStation)
+
+
 """
 Menu principal
 """
 
 
-def thread_cycle():
-    while True:
-        printMenu()
-        inputs = input('Seleccione una opción para continuar\n>')
+# def thread_cycle():
+#     while True:
+#         printMenu()
+#         inputs = input('Seleccione una opción para continuar\n>')
 
-        if int(inputs[0]) == 1:
-            print("\nInicializando....")
+#         if int(inputs[0]) == 1:
+#             print("\nInicializando....")
             # cont es el controlador que se usará de acá en adelante
-            cont = controller.init()
 
-        elif int(inputs[0]) == 2:
-            optionTwo(cont)
+        # elif int(inputs[0]) == 2:
 
-        elif int(inputs[0]) == 3:
-            optionThree(cont)
+        # elif int(inputs[0]) == 3:
+        #     optionThree(cont)
 
-        elif int(inputs[0]) == 4:
-            msg = "Estación Base: BusStopCode-ServiceNo (Ej: 75009-10): "
-            initialStation = input(msg)
-            optionFour(cont, initialStation)
-
-        elif int(inputs[0]) == 5:
-            destStation = input("Estación destino (Ej: 15151-10): ")
-            optionFive(cont, destStation)
-
-        elif int(inputs[0]) == 6:
-            destStation = input("Estación destino (Ej: 15151-10): ")
-            optionSix(cont, destStation)
-
-        elif int(inputs[0]) == 7:
-            optionSeven(cont)
-
-        else:
-            sys.exit(0)
-    sys.exit(0)
+        # elif int(inputs[0]) == 4:
+        #     msg = "Estación Base: BusStopCode-ServiceNo (Ej: 75009-10): "
 
 
-if __name__ == "__main__":
-    threading.stack_size(67108864)  # 64MB stack
-    sys.setrecursionlimit(2 ** 20)
-    thread = threading.Thread(target=thread_cycle)
-    thread.start()
+        # elif int(inputs[0]) == 5:
+        #     destStation = input("Estación destino (Ej: 15151-10): ")
+        #     optionFive(cont, destStation)
+
+        # elif int(inputs[0]) == 6:
+
+
+    #     elif int(inputs[0]) == 7:
+    #         optionSeven(cont)
+
+    #     else:
+    #         sys.exit(0)
+    # sys.exit(0)
+
+
+# if __name__ == "__main__":
+#     threading.stack_size(67108864)  # 64MB stack
+#     sys.setrecursionlimit(2 ** 20)
+#     thread = threading.Thread(target=thread_cycle)
+#     thread.start()

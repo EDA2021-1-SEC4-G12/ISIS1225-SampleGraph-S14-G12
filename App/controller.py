@@ -27,6 +27,8 @@
 import config as cf
 from App import model
 import csv
+import time
+import tracemalloc
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -111,7 +113,23 @@ def minimumCostPaths(analyzer, initialStation):
     Calcula todos los caminos de costo minimo de initialStation a todas
     las otras estaciones del sistema
     """
-    return model.minimumCostPaths(analyzer, initialStation)
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    # start_memory = getMemory()
+
+    output = model.minimumCostPaths(analyzer, initialStation)
+
+    # stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    # delta_memory = deltaMemory(start_memory, stop_memory)
+
+    return output, delta_time
 
 
 def hasPath(analyzer, destStation):
@@ -134,3 +152,16 @@ def servedRoutes(analyzer):
     """
     maxvert, maxdeg = model.servedRoutes(analyzer)
     return maxvert, maxdeg
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
